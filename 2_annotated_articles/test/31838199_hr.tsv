@@ -1,0 +1,12 @@
+Sudden Cardiac Death Risk Prediction in Heart Failure with Preserved Ejection Fraction.
+Sudden cardiac death (SCD) comprises 25% of the deaths in heart failure with preserved ejection fraction (HFpEF).
+We sought to validate a SCD risk prediction model among patients who participated in the Treatment of Preserved Cardiac Function Heart Failure with an Aldosterone Antagonist (TOPCAT) trial.
+Of the 3,445 TOPCAT participants, 615 had data on all 6 variables (age, sex, myocardial infarction, diabetes mellitus, bundle branch block, N-terminal pro-brain natriuretic peptide) of the SCD risk prediction model.
+Those with a 5-year predicted risk of SCD ≥10% were categorized as high risk.
+Over a mean 2.9 (±1.3) years of follow-up, there were 23 (3.7%) SCD and 63 (10.2%) deaths from other causes.
+The mortality rate from SCD and other causes were 13 (95% CI: 9-19) and 35 (95% CI: 28-45) per 1,000 person-years of follow-up, respectively.
+A total of 216 (35.1%) participants were categorized as high risk by the SCD risk model.
+The estimated 5-year cumulative incidence of SCD was 15.2% (95% CI: 6.6-27.2) among those classified as high risk vs. 2.8% (95% CI: 1.2-5.5) for those classified as low risk.
+In competing risk analysis, patients predicted to have high SCD risk had a 3.7-fold greater risk of SCD (HR 3.7; 95% CI: 1.6-8.7; p=0.003) than those predicted to have low risk.	3,109,112.1,38,69.2,101,104.6,151,177	1,2.1,3.1,4
+The SCD risk model had a Harrell's C-index of 0.74.
+A SCD risk prediction model of 6 widely-available variables can identify patients with HFpEF who had a high risk of SCD.

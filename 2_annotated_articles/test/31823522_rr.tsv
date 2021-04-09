@@ -1,0 +1,11 @@
+Identification of chemoresistance-related mRNAs based on gemcitabine-resistant pancreatic cancer cell lines.
+Gemcitabine (GEM) alone and GEM-based chemotherapy are the preferred regimens for treating advanced unresectable and metastatic pancreatic cancer (PC).
+However, these treatments have limited efficacy due to acquired resistance of cancer cells to chemotherapy, the mechanisms of which are not fully understood.
+In this study, we established two stable multidrug-resistant cell lines, BxPC-3-GR and CFPAC-1-GR, from their corresponding parental cells through exposure to GEM following a stepwise incremental dosing strategy.
+The GEM IC50 values of BxPC-3-GR and CFPAC-1-GR increased 112-fold and 210-fold, respectively, compared to parental cell lines.
+In vitro and in vivo experiments confirmed that both GEM-resistant cell subgroups declined in proliferative capacity, but were more resistant to GEM.
+Unlike CFPAC-1-GR, BxPC-3-GR exhibited enhanced migratory and invasive properties compared with BxPC-3 in vitro.
+We also compared differentially expressed mRNA profiles between parental and GEM-resistant cells using transcriptome sequencing.
+RRM1, STIM1, and TRIM21 were significantly upregulated in both GEM-resistant cell lines and confirmed to be associated with the degree of GEM resistance by quantitative reverse-transcription polymerase chain reaction and western blot analysis.
+These three genes were more highly expressed in PC tissues and potentially regarded as prognostic biomarkers through database mining.
+Thus, our findings provide chemo-resistant cell models to better understand the underlying mechanisms of chemoresistance, and to explore potential biomarkers for GEM response in PC patients.

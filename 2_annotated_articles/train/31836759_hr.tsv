@@ -1,0 +1,11 @@
+FANCM suppresses DNA replication stress at ALT telomeres by disrupting TERRA R-loops.
+Cancer cells maintain their telomeres by either re-activating telomerase or adopting the homologous recombination (HR)-based Alternative Lengthening of Telomere (ALT) pathway.
+Among the many prominent features of ALT cells, C-circles (CC) formation is considered to be the most specific and quantifiable biomarker of ALT.
+However, the molecular mechanism behind the initiation and maintenance of CC formation in ALT cells is still largely unknown.
+We reported previously that depletion of the FANCM complex (FANCM-FAAP24-MHF1&2) in ALT cells induced pronounced replication stress, which primarily takes place at their telomeres.
+Here, we characterized the changes in ALT associated phenotypes in cells deficient of the FANCM complex.
+We found that depletion of FAAP24 or FANCM, but not MHF1&2, induces a dramatic increase of CC formation.
+Most importantly, we identified multiple DNA damage response (DDR) and DNA repair pathways that stimulate the dramatic increase of CC formation in FANCM deficient cells, including the dissolvase complex (BLM-TOP3A-RMI1/2, or BTR), DNA damage checkpoint kinases (ATR and Chk1), HR proteins (BRCA2, PALB2, and Rad51), as well as proteins involved in Break-Induced Replication (BIR) (POLD1 and POLD3).
+In addition, FANCD2, another Fanconi Anemia (FA) protein, is also required for CC formation, likely through promoting the recruitment of BLM to the replication stressed ALT telomeres.
+Finally, we demonstrated that TERRA R-loops accumulate at telomeres in FANCM deficient ALT cells and downregulation of which attenuates the ALT-associated PML bodies (APBs), replication stress and CC formation.
+Taken together, our data suggest that FANCM prevents replisomes from stalling/collapsing at ALT telomeres by disrupting TERRA R-loops.

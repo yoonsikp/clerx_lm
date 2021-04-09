@@ -1,0 +1,17 @@
+A novel multi-locus genetic risk score identifies patients with higher risk of generalized aggressive periodontitis.
+Each genetic variant individually explains only a tiny proportion of the genetic variation with insignificant predictive power.
+The tool of multi-locus genetic risk score (GRS), which aggregates information from multiple genetic variants, has been widely utilized in many complex diseases but not applied to generalized aggressive periodontitis (GAgP) yet.
+To examine the joint genetic effects of significant risk variants based on a candidate gene study and their combination effects with conventional risk factors on risk of GAgP.
+335 GAgP patients and 114 healthy controls were enrolled in the case-control study.
+The unweighted GRS (uGRS) and weighted GRS (wGRS) were calculated based on significant variants.
+Logistic regression models were conducted for the GRS-based association analyses on the risk of GAgP.
+Receiver operating characteristic (ROC) analysis was performed to compare the discriminatory ability of predictors of GAgP risk.
+Four loci were found to be significantly associated with GAgP.
+They were MMP8 rs11225395 (OR = 1.40, 95%CI: 1.03, 1.91), EGF rs2237051 (OR = 1.41, 95%CI: 1.03, 1.93), PPAR-a rs4253623 (OR = 1.53, 95%CI: 1.03, 2.26) and APOE rs429358 (OR = 1.79, 95%CI: 1.08, 2.97).	4,33,37.4,79,83.4,128,132.4,177,181.1,11,26.1,59,72.1,105,121.1,157,170	1,5.2,6.3,7.4,8
+Each additional point of the uGRS/wGRS was associated with a 50%/31% increased risk of developing GAgP (OR = 1.50, 95% CI: 1.21-1.85 or OR = 1.31, 95% CI: 1.14-1.51, respectively) after adjusting for age, gender and BMI.	4,110,114.4,142,146.2,99,103.1,30,34.1,35,39.1,1,22	1,6.2,6.1,4.2,5.1,3.2,3
+Participants in the high group of uGRS/wGRS (OR = 2.87, 95%CI: 1.59-5.17 or OR = 2.67, 95%CI: 1.46-4.88, respectively) and the middle group of uGRS/wGRS (OR = 2.21, 95%CI: 1.29-3.78 or OR = 1.88, 95%CI: 1.09-3.08, respectively) had an increased risk of GAgP comparing with those in the low group of score after adjustment for age, gender and BMI.	4,51,55.4,82,86.4,160,164.4,191,195.2,254,258.1,21,31.1,35,39.1,40,44.1,128,140.1,144,148.1,149,153.6,287,305	1,6.2,6.1,7.2,8.3,9.4,9.3,10.4,11.1,5.2,5.3,5.4,5.1,12.2,12.3,12.4,12
+The addition of GRS to a model of conventional risk factors improved discrimination by 4.5% (from 0.695 to 0.740, P = 0.048).
+We demonstrated that the multi-locus GRS based on 4 significant SNPs might be useful for assessing genetic predisposition to GAgP.
+The GRS in combination with conventional risk factors significantly improved the power of identifying subgroups of Chinese population with a particularly high risk for GAgP.
+This article is protected by copyright.
+All rights reserved.

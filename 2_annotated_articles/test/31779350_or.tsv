@@ -1,0 +1,8 @@
+ChaosNet: A chaos based artificial neural network architecture for classification.
+Inspired by chaotic firing of neurons in the brain, we propose ChaosNet-a novel chaos based artificial neural network architecture for classification tasks.
+ChaosNet is built using layers of neurons, each of which is a 1D chaotic map known as the Generalized Luröth Series (GLS) that has been shown in earlier works to possess very useful properties for compression, cryptography, and for computing XOR and other logical operations.
+In this work, we design a novel learning algorithm on ChaosNet that exploits the topological transitivity property of the chaotic GLS neurons.
+The proposed learning algorithm gives consistently good performance accuracy in a number of classification tasks on well known publicly available datasets with very limited training samples.
+Even with as low as seven (or fewer) training samples/class (which accounts for less than 0.05% of the total available data), ChaosNet yields performance accuracies in the range of 73.89%-98.33%.
+We demonstrate the robustness of ChaosNet to additive parameter noise and also provide an example implementation of a two layer ChaosNet for enhancing classification accuracy.
+We envisage the development of several other novel learning algorithms on ChaosNet in the near future.

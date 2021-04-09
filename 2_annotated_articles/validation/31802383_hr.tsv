@@ -1,0 +1,13 @@
+Use of Acid-Suppressant Medications After Diagnosis Increases Mortality in a Subset of Gastrointestinal Cancer Patients.
+Acid-suppressant medications, including proton pump inhibitors (PPIs) and H2 receptor antagonists (H2RAs), are frequently prescribed and have been linked to increased risk of some gastrointestinal cancers.
+We examined whether post-diagnosis use of PPIs/H2RAs is associated with the risk of mortality in gastrointestinal cancer patients.
+We used data from patients with esophageal cancer, gastric cancer, or hepatocellular carcinomas (HCCs) in the national VA Central Cancer Registry diagnosed between 2002 and 2016.
+We identified PPI/H2RA prescriptions that were filled before and after cancer diagnosis and used time-dependent Cox regression models to calculate adjusted hazard ratios (HRs) and 95% CIs for mortality risk.
+We used a time-varying exposure to avoid immortal-time bias and a 3-month lag to reduce reverse causation.
+A sensitivity analysis was conducted varying the lag duration between the date of cancer diagnosis and the start of follow-up.
+PPIs were used by the majority (54% post-diagnosis use) of patients.
+We found no association between post-diagnosis PPI use and cancer-specific mortality in esophageal adenocarcinoma (HR 0.93; 95% CI 0.84-1.02), esophageal squamous cell carcinoma (HR 0.99; 95% CI 0.87-1.12), or gastric cardia cancer (HR 1.04; 95% CI 0.89-1.22) patients.	3,119,123.3,183,187.3,237,241.1,33,55.2,60,85.1,89,114.1,144,178.1,211,232	1,4.2,4.3,4.1,5.2,5.3,5.1,6.2,7.3,8
+Post-diagnosis PPI use was, however, associated with the increased risk of cancer-specific mortality for patients with gastric non-cardia cancer (HR 1.50; 95% CI 1.29-1.74) and HCC (HR 1.31; 95% CI 1.23-1.40).	3,150,154.3,186,190.1,1,23.2,76,101.1,120,145.1,178,181	1,3.2,3.1,4.2,4.1,5.2,6
+The results were similar for associations with post-diagnosis use of H2RAs.
+There was no association with pre-diagnosis PPI/H2RA use.
+Post-diagnosis PPI/H2RA use was associated with the increased mortality in gastric non-cardia cancer and HCC patients.
