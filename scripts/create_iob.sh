@@ -32,9 +32,3 @@ cat ./3_iob_data/context/train_entity/train.txt >> ./3_iob_data/context/train_en
 python3 ./scripts/shuffler.py --seed 4 --input ./3_iob_data/context/train_entity_relation/train.txt > /tmp/c_jer_train.txt
 mv /tmp/c_jer_train.txt ./3_iob_data/context/train_entity_relation/train.txt
 
-
-# Add labels.txt to all folders
-for f in ./3_iob_data/context/*; do pushd "$f"; ln -s ../../labels.txt labels.txt; popd; done
-for f in ./3_iob_data/no_context/*; do pushd "$f"; ln -s ../../labels.txt labels.txt; popd; done
-
-
