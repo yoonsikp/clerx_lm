@@ -11,7 +11,7 @@ export BATCH_SIZE=4
 export GRAD_ACCUM_SIZE=8
 export NUM_EPOCHS=20
 export CURRENT_DIR=${PWD}
-export LEARNING_RATE=0.0001
+export LEARNING_RATE=0.00005
 export DATA_DIR=./3_iob_data/context/train_entity_relation
 
 for i in {1..10}; do
