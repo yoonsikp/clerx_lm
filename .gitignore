@@ -1,5 +1,7 @@
 .DS_Store
 .vscode/*
+3_iob_data/**/cached_*
+/runs/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

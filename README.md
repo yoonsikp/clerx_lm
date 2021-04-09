@@ -1,6 +1,7 @@
 # CLERx-LM
 
 ### Install Requirements
+Tested on Python 3.8!
 ```
 pip3 install --upgrade pip
 pip3 install -r requirements.txt
