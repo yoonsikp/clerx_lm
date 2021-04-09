@@ -18,7 +18,7 @@ for f in ./0_pubmed_data/*.xml; do python3 ./scripts/extract_articles.py --input
 ### Run TSV validation tool
 
 ```
-for f in ./2_annotated_articles/*; do python3 ./scripts/validate_tsv.py --input "$f"; done
+for f in ./2_annotated_articles/*; do python3 ./scripts/validate_tsv.py --input "$f" |grep "errors"; done
 ```
 
 ### Generate IOB files

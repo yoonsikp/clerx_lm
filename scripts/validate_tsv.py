@@ -84,6 +84,9 @@ for name in glob.glob(args.input + '*.*'):
                     if int(pairvals[0]) < 1 or int(pairvals[1]) < 1:
                         error()
                         print('pair val too large')
+                    if int(pairvals[0]) == int(pairvals[1]):
+                        error()
+                        print('cannot be pair with self')
                     pair_dict[raw_tag_list[int(pairvals[0])-1].split(',')[0]] += 1
                     pair_dict[raw_tag_list[int(pairvals[1])-1].split(',')[0]] += 1
                    
