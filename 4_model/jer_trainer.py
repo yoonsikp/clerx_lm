@@ -10,7 +10,7 @@ class JERTrainer(Trainer):
             Works both with or without labels.
             """
 
-            prediction_loss_only = prediction_loss_only if prediction_loss_only is not None else self.prediction_loss_only
+            prediction_loss_only = False
 
             model = self.model
             # multi-gpu eval
