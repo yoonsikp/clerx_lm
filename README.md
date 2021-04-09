@@ -1,5 +1,11 @@
 # CLERx-LM
 
+### Install Requirements
+```
+pip3 install --upgrade pip
+pip3 install -r requirements.txt
+```
+
 ### Extract tar.gz files:
 
 ```
@@ -10,7 +16,6 @@ gunzip -dk ./0_pubmed_data/*.gz
 
 ```
 for f in ./0_pubmed_data/*.xml; do python3 ./scripts/extract_articles.py --input "$f" --output ./1_articles; done
-
 ```
 
 ### Annotate articles manually
