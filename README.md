@@ -34,6 +34,14 @@ for f in ./2_annotated_articles/*; do python3 ./scripts/validate_tsv.py --input 
 ```
 
 ### Run Training Scripts
+```
+./5_training/scripts/biomed_roberta_base_e.sh
+./5_training/scripts/biomed_roberta_base_er.sh
+./5_training/scripts/roberta_base_e.sh
+./5_training/scripts/roberta_base_er.sh
+./5_training/scripts/roberta_large_e.sh
+./5_training/scripts/roberta_large_er.sh
+```
 
 ### Run Testing Scripts
 
