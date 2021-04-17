@@ -26,6 +26,9 @@ from filelock import FileLock
 
 from transformers import PreTrainedTokenizer, is_tf_available, is_torch_available
 
+import torch
+from torch import nn
+from torch.utils.data.dataset import Dataset
 
 logger = logging.getLogger(__name__)
 
@@ -67,74 +70,77 @@ class Split(Enum):
     test = "test"
 
 
-if is_torch_available():
-    import torch
-    from torch import nn
-    from torch.utils.data.dataset import Dataset
+class NerDataset(Dataset):
+    """
+    This will be superseded by a framework-agnostic approach
+    soon.
+    """
 
-    class NerDataset(Dataset):
-        """
-        This will be superseded by a framework-agnostic approach
-        soon.
-        """
+    features: List[InputFeatures]
+    pad_token_label_id: int = nn.CrossEntropyLoss().ignore_index
+    # Use cross entropy ignore_index as padding label id so that only
+    # real label ids contribute to the loss later.
 
-        features: List[InputFeatures]
-        pad_token_label_id: int = nn.CrossEntropyLoss().ignore_index
-        # Use cross entropy ignore_index as padding label id so that only
-        # real label ids contribute to the loss later.
+    def __init__(
+        self,
+        tokenizer: PreTrainedTokenizer,
+        labels: List[str],
+        model_type: str,
+        max_seq_length: Optional[int] = None,
+        overwrite_cache=False,
+        mode: Split = Split.train,
+        use_cache: bool = True,
+        data_str: Optional[str] = None,
+        data_dir: Optional[str] = None,
+    ):
+        # only parse data_dir if data_str is None
+        # either data_str or data_dir should not be None
+        def get_features():
+            if data_str:
+                examples = [read_example_from_string(data_str, mode)]
+            else:
+                logger.info(f"Creating features from dataset file at {data_dir}")
+                examples = read_examples_from_file(data_dir, mode)
 
-        def __init__(
-            self,
-            data_dir: str,
-            tokenizer: PreTrainedTokenizer,
-            labels: List[str],
-            model_type: str,
-            max_seq_length: Optional[int] = None,
-            overwrite_cache=False,
-            mode: Split = Split.train,
-        ):
+            return convert_examples_to_features(
+                examples,
+                labels,
+                max_seq_length,
+                tokenizer,
+                cls_token_at_end=bool(model_type in ["xlnet"]),
+                # xlnet has a cls token at the end
+                cls_token=tokenizer.cls_token,
+                cls_token_segment_id=2 if model_type in ["xlnet"] else 0,
+                sep_token=tokenizer.sep_token,
+                pad_on_left=bool(tokenizer.padding_side == "left"),
+                pad_token=tokenizer.pad_token_id,
+                pad_token_segment_id=tokenizer.pad_token_type_id,
+                pad_token_label_id=self.pad_token_label_id,
+            )
+        if use_cache:
             # Load data features from cache or dataset file
             cached_features_file = os.path.join(
                 data_dir, "cached_{}_{}_{}".format(mode.value, tokenizer.__class__.__name__, str(max_seq_length)),
             )
-
             # Make sure only the first process in distributed training processes the dataset,
             # and the others will use the cache.
             lock_path = cached_features_file + ".lock"
             with FileLock(lock_path):
-
                 if os.path.exists(cached_features_file) and not overwrite_cache:
                     logger.info(f"Loading features from cached file {cached_features_file}")
                     self.features = torch.load(cached_features_file)
                 else:
-                    logger.info(f"Creating features from dataset file at {data_dir}")
-                    examples = read_examples_from_file(data_dir, mode)
-                    # TODO clean up all this to leverage built-in features of tokenizers
-                    self.features = convert_examples_to_features(
-                        examples,
-                        labels,
-                        max_seq_length,
-                        tokenizer,
-                        cls_token_at_end=bool(model_type in ["xlnet"]),
-                        # xlnet has a cls token at the end
-                        cls_token=tokenizer.cls_token,
-                        cls_token_segment_id=2 if model_type in ["xlnet"] else 0,
-                        sep_token=tokenizer.sep_token,
-                        sep_token_extra=False,
-                        # roberta uses an extra separator b/w pairs of sentences, cf. github.com/pytorch/fairseq/commit/1684e166e3da03f5b600dbb7855cb98ddfcd0805
-                        pad_on_left=bool(tokenizer.padding_side == "left"),
-                        pad_token=tokenizer.pad_token_id,
-                        pad_token_segment_id=tokenizer.pad_token_type_id,
-                        pad_token_label_id=self.pad_token_label_id,
-                    )
+                    self.features = get_features()
                     logger.info(f"Saving features into cached file {cached_features_file}")
                     torch.save(self.features, cached_features_file)
+        else:
+            self.features = get_features()
 
-        def __len__(self):
-            return len(self.features)
+    def __len__(self):
+        return len(self.features)
 
-        def __getitem__(self, i) -> InputFeatures:
-            return self.features[i]
+    def __getitem__(self, i) -> InputFeatures:
+        return self.features[i]
 
 def read_examples_from_file(data_dir, mode: Union[Split, str]) -> List[InputExample]:
     if isinstance(mode, Split):
@@ -165,6 +171,25 @@ def read_examples_from_file(data_dir, mode: Union[Split, str]) -> List[InputExam
     return examples
 
 
+def read_example_from_string(data_str, mode: Union[Split, str]) -> InputExample:
+    if isinstance(mode, Split):
+        mode = mode.value
+    guid_index = 1
+    words = []
+    labels = []
+    for line in data_str.split("\n"):
+        if not (line.startswith("-DOCSTART-") or line == "" or line == "\n"):
+            splits = line.split("\t")
+            words.append(splits[0])
+            if len(splits) > 1:
+                labels.append(splits[-1].replace("\n", ""))
+            else:
+                # Examples could have no label for mode = "test"
+                labels.append("O")
+    return InputExample(guid=f"{mode}-{guid_index}", words=words, labels=labels)
+
+
+
 def convert_examples_to_features(
     examples: List[InputExample],
     label_list: List[str],
@@ -174,7 +199,6 @@ def convert_examples_to_features(
     cls_token="[CLS]",
     cls_token_segment_id=1,
     sep_token="[SEP]",
-    sep_token_extra=False,
     pad_on_left=False,
     pad_token=0,
     pad_token_segment_id=0,
@@ -214,6 +238,7 @@ def convert_examples_to_features(
                     label_ids.extend([pad_token_label_id])
                 elif label == 'CONTEXT_END':
                     label_ids.extend([pad_token_label_id])
+                    # roberta uses an extra separator b/w pairs of sentences
                     tokens.extend([sep_token] * 2)
                     label_ids.extend([pad_token_label_id] * 2)
                 elif label in ['BOS_0', 'BOS_1']:
@@ -307,11 +332,9 @@ def convert_examples_to_features(
 
 
 def get_labels(path: str) -> List[str]:
-    if path:
-        with open(path, "r") as f:
-            labels = f.read().splitlines()
-        if "O" not in labels:
-            labels = ["O"] + labels
-        return labels
-    else:
-        return ["O", "B-MISC", "I-MISC", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC"]
+    with open(path, "r") as f:
+        labels = f.read().splitlines()
+    if "O" not in labels:
+        labels = ["O"] + labels
+    return labels
+    
