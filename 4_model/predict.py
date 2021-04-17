@@ -83,22 +83,6 @@ class DataTrainingArguments:
     )
 
 
-def align_predictions(
-    predictions: np.ndarray, label_ids: np.ndarray
-) -> Tuple[List[int], List[int]]:
-    preds = np.argmax(predictions, axis=2)
-    batch_size, seq_len = preds.shape
-
-    out_label_list = [[] for _ in range(batch_size)]
-    preds_list = [[] for _ in range(batch_size)]
-
-    for i in range(batch_size):
-        for j in range(seq_len):
-            if label_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
-                out_label_list[i].append(label_map[label_ids[i][j]])
-                preds_list[i].append(label_map[preds[i][j]])
-
-    return preds_list, out_label_list
 
 
 def compute_metrics(p: EvalPrediction) -> Dict:
@@ -111,6 +95,23 @@ def compute_metrics(p: EvalPrediction) -> Dict:
 
 
 class PredictionModel:
+    def align_predictions(self, 
+        predictions: np.ndarray, label_ids: np.ndarray,
+    ) -> Tuple[List[int], List[int]]:
+        preds = np.argmax(predictions, axis=2)
+        batch_size, seq_len = preds.shape
+
+        out_label_list = [[] for _ in range(batch_size)]
+        preds_list = [[] for _ in range(batch_size)]
+
+        for i in range(batch_size):
+            for j in range(seq_len):
+                if label_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
+                    out_label_list[i].append(self.label_map[label_ids[i][j]])
+                    preds_list[i].append(self.label_map[preds[i][j]])
+
+        return preds_list, out_label_list
+
     def __init__(self, dict_args):
         parser = HfArgumentParser(
             (ModelArguments, DataTrainingArguments, TrainingArguments)
@@ -191,45 +192,41 @@ class PredictionModel:
         print(accuracy_score(np.array(actual_relations), relation_final))
         predictions = predictions[0]
         print(predictions)
-        preds_list, _ = align_predictions(predictions, label_ids)
+        preds_list, _ = self.align_predictions(predictions, label_ids)
 
         output_test_results_file = os.path.join("/tmp/", "test_results.txt")
-        if trainer.is_world_master():
-            with open(output_test_results_file, "w") as writer:
-                for key, value in metrics.items():
-                    logger.info("  %s = %s", key, value)
-                    writer.write("%s = %s\n" % (key, value))
+        with open(output_test_results_file, "w") as writer:
+            for key, value in metrics.items():
+                logger.info("  %s = %s", key, value)
+                writer.write("%s = %s\n" % (key, value))
 
         # Save predictions
         output_test_predictions_file = os.path.join("/tmp/", "test_predictions.txt")
-        if trainer.is_world_master():
-            with open(output_test_predictions_file, "w") as writer:
-                with open(os.path.join("/tmp/", "test.txt"), "r") as f:
-                    example_id = 0
-                    for line in f:
-                        if line.startswith("-DOCSTART-") or line == "" or line == "\n":
-                            writer.write(line)
-                            if not preds_list[example_id]:
-                                example_id += 1
-                        elif "\tCONTEXT" in line:
-                            pass
-                        elif "\tBOS_" in line:
-                            pass
-                        elif preds_list[example_id]:
-                            output_line = (
-                                line.split()[0]
-                                + " "
-                                + preds_list[example_id].pop(0)
-                                + "\n"
-                            )
-                            writer.write(output_line)
-                        else:
-                            logger.warning(
-                                "Maximum sequence length exceeded: No prediction for '%s'.",
-                                line.split()[0],
-                            )
+        with open(output_test_predictions_file, "w") as writer:
+            example_id = 0
+            for line in data_str.split('\n'):
+                if line.startswith("-DOCSTART-") or line == "" or line == "\n":
+                    writer.write(line)
+                    if not preds_list[example_id]:
+                        example_id += 1
+                elif "\tCONTEXT" in line:
+                    pass
+                elif "\tBOS_" in line:
+                    pass
+                elif preds_list[example_id]:
+                    output_line = (
+                        line.split()[0]
+                        + " "
+                        + preds_list[example_id].pop(0)
+                        + "\n"
+                    )
+                    writer.write(output_line)
+                else:
+                    logger.warning(
+                        "Maximum sequence length exceeded: No prediction for '%s'.",
+                        line.split()[0],
+                    )
 
-        return results
 
 
 if __name__ == "__main__":
@@ -242,4 +239,5 @@ if __name__ == "__main__":
         "fp16": True,
     }
     predmodel = PredictionModel(args)
-    predmodel.do_predict("Finally	O\nĠGroup	B-EXPL_VAR\n")
+    data_str = "Finally	O\nĠGroup	B-EXPL_VAR\n"
+    predmodel.do_predict(data_str)

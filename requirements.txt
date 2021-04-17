@@ -4,7 +4,7 @@ intervaltree
 pandas
 torch
 seqeval
-tensorboard
+#tensorboard
 scikit-learn
 psutil
 sacrebleu
