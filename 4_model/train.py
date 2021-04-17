@@ -251,66 +251,8 @@ def main():
 
             results.update(result)
 
-    # Predict
-    if training_args.do_predict:
-        test_dataset = NerDataset(
-            data_dir=data_args.data_dir,
-            tokenizer=tokenizer,
-            labels=labels,
-            model_type=config.model_type,
-            max_seq_length=data_args.max_seq_length,
-            overwrite_cache=data_args.overwrite_cache,
-            mode=Split.test,
-        )
-        predictions, label_ids, metrics = trainer.predict(test_dataset)
-        relation_preds = predictions[1]
-        relation_final = np.argmax(relation_preds, axis=1)
-        print(np.array(relation_final))
-        actual_relations = []
-
-        for i in test_dataset.features:
-            actual_relations.append(i.relation_labels[0])
-        print(np.array(actual_relations))
-        print(accuracy_score(np.array(actual_relations),relation_final))
-        predictions = predictions[0]
-        preds_list, _ = align_predictions(predictions, label_ids)
-
-        output_test_results_file = os.path.join(training_args.output_dir, "test_results.txt")
-        if trainer.is_world_master():
-            with open(output_test_results_file, "w") as writer:
-                for key, value in metrics.items():
-                    logger.info("  %s = %s", key, value)
-                    writer.write("%s = %s\n" % (key, value))
-
-        # Save predictions
-        output_test_predictions_file = os.path.join(training_args.output_dir, "test_predictions.txt")
-        if trainer.is_world_master():
-            with open(output_test_predictions_file, "w") as writer:
-                with open(os.path.join(data_args.data_dir, "test.txt"), "r") as f:
-                    example_id = 0
-                    for line in f:
-                        if line.startswith("-DOCSTART-") or line == "" or line == "\n":
-                            writer.write(line)
-                            if not preds_list[example_id]:
-                                example_id += 1
-                        elif '\tCONTEXT' in line:
-                            pass
-                        elif '\tBOS_' in line:
-                            pass
-                        elif preds_list[example_id]:
-                            output_line = line.split()[0] + " " + preds_list[example_id].pop(0) + "\n"
-                            writer.write(output_line)
-                        else:
-                            logger.warning(
-                                "Maximum sequence length exceeded: No prediction for '%s'.", line.split()[0]
-                            )
 
     return results
-
-
-def _mp_fn(index):
-    # For xla_spawn (TPUs)
-    main()
 
 
 if __name__ == "__main__":
