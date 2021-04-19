@@ -17,7 +17,7 @@ export DATA_DIR=./3_iob_data/context/train_entity_relation
 for i in {1..10}; do
     export SEED=$i
     export OUTPUT_DIR_NAME=biomed-roberta-base-final-$i
-    export OUTPUT_DIR=./5_training/saved_models/${OUTPUT_DIR_NAME}
+    export OUTPUT_DIR=./5_training/saved_models_er/${OUTPUT_DIR_NAME}
     mkdir -p $OUTPUT_DIR
     ./5_training/scripts/run.sh
 done
