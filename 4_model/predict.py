@@ -13,14 +13,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" Fine-tuning the library models for named entity recognition on CoNLL-2003. """
 
 
 import logging
 import os
 import sys
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from seqeval.metrics import f1_score, precision_score, recall_score, accuracy_score
@@ -83,35 +82,7 @@ class DataTrainingArguments:
     )
 
 
-
-
-def compute_metrics(p: EvalPrediction) -> Dict:
-    preds_list, out_label_list = align_predictions(p.predictions, p.label_ids)
-    return {
-        "precision": precision_score(out_label_list, preds_list),
-        "recall": recall_score(out_label_list, preds_list),
-        "f1": f1_score(out_label_list, preds_list),
-    }
-
-
 class PredictionModel:
-    def align_predictions(self, 
-        predictions: np.ndarray, label_ids: np.ndarray,
-    ) -> Tuple[List[int], List[int]]:
-        preds = np.argmax(predictions, axis=2)
-        batch_size, seq_len = preds.shape
-
-        out_label_list = [[] for _ in range(batch_size)]
-        preds_list = [[] for _ in range(batch_size)]
-
-        for i in range(batch_size):
-            for j in range(seq_len):
-                if label_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
-                    out_label_list[i].append(self.label_map[label_ids[i][j]])
-                    preds_list[i].append(self.label_map[preds[i][j]])
-
-        return preds_list, out_label_list
-
     def __init__(self, dict_args):
         parser = HfArgumentParser(
             (ModelArguments, DataTrainingArguments, TrainingArguments)
@@ -133,7 +104,7 @@ class PredictionModel:
         # Set seed
         set_seed(self.training_args.seed)
 
-        # Prepare CONLL-2003 task
+        # Prepare label maps
         self.labels = get_labels(self.data_args.labels)
         self.label_map: Dict[int, str] = {
             i: label for i, label in enumerate(self.labels)
@@ -141,11 +112,6 @@ class PredictionModel:
         self.num_labels = len(self.labels)
 
         # Load pretrained model and tokenizer
-        #
-        # Distributed training:
-        # The .from_pretrained methods guarantee that only one local process can concurrently
-        # download model & vocab.
-
         self.config = AutoConfig.from_pretrained(
             self.model_args.model_name_or_path,
             num_labels=self.num_labels,
@@ -168,9 +134,8 @@ class PredictionModel:
             args=self.training_args,
         )
 
-    def do_predict(self, data_str):
-        # Predict
-        test_dataset = NerDataset(
+    def create_dataset(self, data_str):
+        return NerDataset(
             data_str=data_str,
             tokenizer=self.tokenizer,
             labels=self.labels,
@@ -180,53 +145,84 @@ class PredictionModel:
             mode=Split.test,
             use_cache=False,
         )
-        predictions, label_ids, metrics = self.trainer.predict(test_dataset)
-        relation_preds = predictions[1]
-        relation_final = np.argmax(relation_preds, axis=1)
-        print(np.array(relation_final))
-        actual_relations = []
 
-        for i in test_dataset.features:
-            actual_relations.append(i.relation_labels[0])
-        print(np.array(actual_relations))
-        print(accuracy_score(np.array(actual_relations), relation_final))
-        predictions = predictions[0]
-        print(predictions)
-        preds_list, _ = self.align_predictions(predictions, label_ids)
+    def do_predict(self, dataset):
+        # predictions is a tuple containing softmaxed (Entity_Probabilities, Relation_Probabilities)
+        predictions, true_entity_ids, metrics = self.trainer.predict(dataset)
+        pred_entity_ids = np.argmax(predictions[0], axis=2)
+        pred_relations = np.argmax(predictions[1], axis=1)
+        true_relations = np.array([i.relation_labels[0] for i in dataset.features])
+        print("true_relations", true_relations)
+        print("pred_relations", pred_relations)
+        print("relation_accuracy", accuracy_score(true_relations, pred_relations))
 
-        output_test_results_file = os.path.join("/tmp/", "test_results.txt")
-        with open(output_test_results_file, "w") as writer:
-            for key, value in metrics.items():
-                logger.info("  %s = %s", key, value)
-                writer.write("%s = %s\n" % (key, value))
+        print("true_entity_ids", true_entity_ids)
+        print("pred_entity_ids", pred_entity_ids)
+        converted_entity_labels, _ = self.mask_convert_entity_ids(
+            pred_entity_ids, true_entity_ids
+        )
+        print("converted_entity_labels", converted_entity_labels)
 
-        # Save predictions
-        output_test_predictions_file = os.path.join("/tmp/", "test_predictions.txt")
-        with open(output_test_predictions_file, "w") as writer:
-            example_id = 0
-            for line in data_str.split('\n'):
-                if line.startswith("-DOCSTART-") or line == "" or line == "\n":
-                    writer.write(line)
-                    if not preds_list[example_id]:
-                        example_id += 1
-                elif "\tCONTEXT" in line:
-                    pass
-                elif "\tBOS_" in line:
-                    pass
-                elif preds_list[example_id]:
-                    output_line = (
-                        line.split()[0]
-                        + " "
-                        + preds_list[example_id].pop(0)
-                        + "\n"
-                    )
-                    writer.write(output_line)
-                else:
-                    logger.warning(
-                        "Maximum sequence length exceeded: No prediction for '%s'.",
-                        line.split()[0],
-                    )
+        print("eval_loss", metrics["eval_loss"])
 
+        self.generate_iob(converted_entity_labels, data_str)
+
+    def mask_convert_entity_ids(
+        self,
+        predictions: np.ndarray,
+        label_ids: np.ndarray,
+    ) -> Tuple[List[int], List[int]]:
+        batch_size, seq_len = predictions.shape
+
+        out_label_list = [[] for _ in range(batch_size)]
+        preds_list = [[] for _ in range(batch_size)]
+
+        for i in range(batch_size):
+            for j in range(seq_len):
+                if label_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
+                    out_label_list[i].append(self.label_map[label_ids[i][j]])
+                    preds_list[i].append(self.label_map[predictions[i][j]])
+
+        return preds_list, out_label_list
+
+    def set_relation(self, data_str: str, relation_status: Optional[Union[int, bool]]):
+        if relation_status is None:
+            return data_str
+        elif relation_status:
+            return "<s>\tBOS_1\n" + data_str
+        else:
+            return "<s>\tBOS_0\n" + data_str
+
+    def generate_iob(self, converted_entity_labels, data_str):
+        i = 0
+        for line in data_str.split("\n"):
+            if line.startswith("-DOCSTART-") or line == "" or line == "\n":
+                print(line, end="")
+                if not converted_entity_labels[i]:
+                    i += 1
+            elif "\tCONTEXT" in line:
+                pass
+            elif "\tBOS_" in line:
+                pass
+            elif converted_entity_labels[i]:
+                output_line = (
+                    line.split()[0] + " " + converted_entity_labels[i].pop(0) + "\n"
+                )
+                print(output_line, end="")
+            else:
+                logger.warning(
+                    "Maximum sequence length exceeded: No prediction for '%s'.",
+                    line.split()[0],
+                )
+
+
+def compute_metrics(p: EvalPrediction) -> Dict:
+    preds_list, out_label_list = mask_convert_entity_ids(p.predictions, p.label_ids)
+    return {
+        "precision": precision_score(out_label_list, preds_list),
+        "recall": recall_score(out_label_list, preds_list),
+        "f1": f1_score(out_label_list, preds_list),
+    }
 
 
 if __name__ == "__main__":
@@ -239,5 +235,6 @@ if __name__ == "__main__":
         "fp16": True,
     }
     predmodel = PredictionModel(args)
-    data_str = "Finally	O\nĠGroup	B-EXPL_VAR\n"
-    predmodel.do_predict(data_str)
+    data_str = predmodel.set_relation("Finally\tO\nĠGroup\tB-EXPL_VAR\n", 1)
+    dataset = predmodel.create_dataset(data_str)
+    predmodel.do_predict(dataset)

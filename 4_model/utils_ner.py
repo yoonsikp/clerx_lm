@@ -99,7 +99,8 @@ class NerDataset(Dataset):
             if data_str:
                 examples = [read_example_from_string(data_str, mode)]
             else:
-                logger.info(f"Creating features from dataset file at {data_dir}")
+                if not os.getenv('SILENT_MODE') or os.getenv('SILENT_MODE') != "1":
+                    logger.info(f"Creating features from dataset file at {data_dir}")
                 examples = read_examples_from_file(data_dir, mode)
 
             return convert_examples_to_features(
@@ -127,11 +128,13 @@ class NerDataset(Dataset):
             lock_path = cached_features_file + ".lock"
             with FileLock(lock_path):
                 if os.path.exists(cached_features_file) and not overwrite_cache:
-                    logger.info(f"Loading features from cached file {cached_features_file}")
+                    if not os.getenv('SILENT_MODE') or os.getenv('SILENT_MODE') != "1":
+                        logger.info(f"Loading features from cached file {cached_features_file}")
                     self.features = torch.load(cached_features_file)
                 else:
                     self.features = get_features()
-                    logger.info(f"Saving features into cached file {cached_features_file}")
+                    if not os.getenv('SILENT_MODE') or os.getenv('SILENT_MODE') != "1":
+                        logger.info(f"Saving features into cached file {cached_features_file}")
                     torch.save(self.features, cached_features_file)
         else:
             self.features = get_features()
@@ -310,15 +313,16 @@ def convert_examples_to_features(
         assert len(segment_ids) == max_seq_length
         assert len(label_ids) == max_seq_length
 
-        if ex_index < 5:
-            logger.info("*** Example ***")
-            logger.info("guid: %s", example.guid)
-            logger.info("tokens: %s", " ".join([str(x) for x in tokens]))
-            logger.info("input_ids: %s", " ".join([str(x) for x in input_ids]))
-            logger.info("input_mask: %s", " ".join([str(x) for x in input_mask]))
-            logger.info("segment_ids: %s", " ".join([str(x) for x in segment_ids]))
-            logger.info("label_ids: %s", " ".join([str(x) for x in label_ids]))
-            logger.info("relation_labels: %s", " ".join([str(x) for x in relation_labels]))
+        if not os.getenv('SILENT_MODE') or os.getenv('SILENT_MODE') != "1":
+            if ex_index < 5:
+                logger.info("*** Example ***")
+                logger.info("guid: %s", example.guid)
+                logger.info("tokens: %s", " ".join([str(x) for x in tokens]))
+                logger.info("input_ids: %s", " ".join([str(x) for x in input_ids]))
+                logger.info("input_mask: %s", " ".join([str(x) for x in input_mask]))
+                logger.info("segment_ids: %s", " ".join([str(x) for x in segment_ids]))
+                logger.info("label_ids: %s", " ".join([str(x) for x in label_ids]))
+                logger.info("relation_labels: %s", " ".join([str(x) for x in relation_labels]))
 
         if "token_type_ids" not in tokenizer.model_input_names:
             segment_ids = None
