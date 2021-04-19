@@ -20,6 +20,7 @@ for f in ./0_pubmed_data/*.xml; do python3 ./scripts/extract_articles.py --input
 ```
 
 ### Annotate articles manually
+See appendix
 
 ### Run TSV validation tool
 

@@ -222,7 +222,7 @@ if __name__ == "__main__":
         "max_seq_length": 512,
         "output_dir": "/tmp/",
         "labels": "./3_iob_data/labels.txt",
-        "model_name_or_path": "./5_training/saved_models_nc/biomed-roberta-base-final-2",
+        "model_name_or_path": "distilroberta-base",
         "per_device_eval_batch_size": 1,
         "fp16": True,
     }
@@ -245,5 +245,5 @@ if __name__ == "__main__":
         print("trimmed_true_entity_labels", trimmed_true_entity_labels)
 
         print("eval_loss", eval_loss)
-
+    print_debug_info()
     predmodel.generate_iob(trimmed_pred_entity_labels, data_str)
