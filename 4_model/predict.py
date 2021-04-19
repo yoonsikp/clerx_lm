@@ -150,27 +150,14 @@ class PredictionModel:
         )
 
     def do_predict(self, dataset):
+        """ Returns prediction data, along with ground truth data.
+        """
         # predictions is a tuple containing softmaxed (Entity_Probabilities, Relation_Probabilities)
         predictions, true_entity_ids, metrics = self.trainer.predict(dataset)
         pred_entity_ids = np.argmax(predictions[0], axis=2)
         pred_relations = np.argmax(predictions[1], axis=1)
         true_relations = np.array([i.relation_labels[0] for i in dataset.features])
-        # print("true_relations", true_relations)
-        # print("pred_relations", pred_relations)
-        # print("relation_accuracy", accuracy_score(true_relations, pred_relations))
-
-        # print("true_entity_ids", true_entity_ids)
-        # print("pred_entity_ids", pred_entity_ids)
-        # trimmed_pred_entity_labels, trimmed_true_entity_labels = self.trim_and_convert_entity_ids(
-        #     pred_entity_ids, true_entity_ids
-        # )
-        # print("trimmed_pred_entity_labels", trimmed_pred_entity_labels)
-        # print("trimmed_true_entity_labels", trimmed_true_entity_labels)
-
-        # print("eval_loss", metrics["eval_loss"])
-
-        # self.generate_iob(trimmed_pred_entity_labels, data_str)
-        return pred_relations, true_relations, pred_entity_ids, true_entity_ids
+        return pred_relations, true_relations, pred_entity_ids, true_entity_ids, metrics["eval_loss"]
 
     def trim_and_convert_entity_ids(
         self,
@@ -242,4 +229,20 @@ if __name__ == "__main__":
     predmodel = PredictionModel(args)
     data_str = predmodel.set_relation("Finally\tO\nĠGroup\tB-EXPL_VAR\n", 1)
     dataset = predmodel.create_dataset(data_str)
-    print(predmodel.do_predict(dataset))
+    pred_relations, true_relations, pred_entity_ids, true_entity_ids, eval_loss = predmodel.do_predict(dataset)
+
+    print("true_relations", true_relations)
+    print("pred_relations", pred_relations)
+    print("relation_accuracy", accuracy_score(true_relations, pred_relations))
+
+    print("true_entity_ids", true_entity_ids)
+    print("pred_entity_ids", pred_entity_ids)
+    trimmed_pred_entity_labels, trimmed_true_entity_labels = predmodel.trim_and_convert_entity_ids(
+        pred_entity_ids, true_entity_ids
+    )
+    print("trimmed_pred_entity_labels", trimmed_pred_entity_labels)
+    print("trimmed_true_entity_labels", trimmed_true_entity_labels)
+
+    print("eval_loss", eval_loss)
+
+    predmodel.generate_iob(trimmed_pred_entity_labels, data_str)
