@@ -135,6 +135,9 @@ class PredictionModel:
         )
 
     def create_dataset(self, data_str):
+        """If the data_str does not contain any entity labels, the entity will be considered as
+        label "O". If there is no relation id, the id will be "-100" and the loss will
+        not be calculated."""
         return NerDataset(
             data_str=data_str,
             tokenizer=self.tokenizer,
@@ -152,38 +155,40 @@ class PredictionModel:
         pred_entity_ids = np.argmax(predictions[0], axis=2)
         pred_relations = np.argmax(predictions[1], axis=1)
         true_relations = np.array([i.relation_labels[0] for i in dataset.features])
-        print("true_relations", true_relations)
-        print("pred_relations", pred_relations)
-        print("relation_accuracy", accuracy_score(true_relations, pred_relations))
+        # print("true_relations", true_relations)
+        # print("pred_relations", pred_relations)
+        # print("relation_accuracy", accuracy_score(true_relations, pred_relations))
 
-        print("true_entity_ids", true_entity_ids)
-        print("pred_entity_ids", pred_entity_ids)
-        converted_entity_labels, _ = self.mask_convert_entity_ids(
-            pred_entity_ids, true_entity_ids
-        )
-        print("converted_entity_labels", converted_entity_labels)
+        # print("true_entity_ids", true_entity_ids)
+        # print("pred_entity_ids", pred_entity_ids)
+        # trimmed_pred_entity_labels, trimmed_true_entity_labels = self.trim_and_convert_entity_ids(
+        #     pred_entity_ids, true_entity_ids
+        # )
+        # print("trimmed_pred_entity_labels", trimmed_pred_entity_labels)
+        # print("trimmed_true_entity_labels", trimmed_true_entity_labels)
 
-        print("eval_loss", metrics["eval_loss"])
+        # print("eval_loss", metrics["eval_loss"])
 
-        self.generate_iob(converted_entity_labels, data_str)
+        # self.generate_iob(trimmed_pred_entity_labels, data_str)
+        return pred_relations, true_relations, pred_entity_ids, true_entity_ids
 
-    def mask_convert_entity_ids(
+    def trim_and_convert_entity_ids(
         self,
-        predictions: np.ndarray,
-        label_ids: np.ndarray,
+        pred_ids: np.ndarray,
+        true_ids: np.ndarray,
     ) -> Tuple[List[int], List[int]]:
-        batch_size, seq_len = predictions.shape
+        batch_size, seq_len = pred_ids.shape
 
-        out_label_list = [[] for _ in range(batch_size)]
-        preds_list = [[] for _ in range(batch_size)]
+        true_labels = [[] * batch_size]
+        pred_labels = [[] * batch_size]
 
         for i in range(batch_size):
             for j in range(seq_len):
-                if label_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
-                    out_label_list[i].append(self.label_map[label_ids[i][j]])
-                    preds_list[i].append(self.label_map[predictions[i][j]])
+                if true_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
+                    true_labels[i].append(self.label_map[true_ids[i][j]])
+                    pred_labels[i].append(self.label_map[pred_ids[i][j]])
 
-        return preds_list, out_label_list
+        return pred_labels, true_labels
 
     def set_relation(self, data_str: str, relation_status: Optional[Union[int, bool]]):
         if relation_status is None:
@@ -217,7 +222,7 @@ class PredictionModel:
 
 
 def compute_metrics(p: EvalPrediction) -> Dict:
-    preds_list, out_label_list = mask_convert_entity_ids(p.predictions, p.label_ids)
+    preds_list, out_label_list = trim_and_convert_entity_ids(p.predictions, p.label_ids)
     return {
         "precision": precision_score(out_label_list, preds_list),
         "recall": recall_score(out_label_list, preds_list),
@@ -237,4 +242,4 @@ if __name__ == "__main__":
     predmodel = PredictionModel(args)
     data_str = predmodel.set_relation("Finally\tO\nĠGroup\tB-EXPL_VAR\n", 1)
     dataset = predmodel.create_dataset(data_str)
-    predmodel.do_predict(dataset)
+    print(predmodel.do_predict(dataset))
