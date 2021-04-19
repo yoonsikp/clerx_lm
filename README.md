@@ -35,12 +35,21 @@ for f in ./2_annotated_articles/*; do python3 ./scripts/validate_tsv.py --input 
 
 ### Run Training Scripts
 ```
+# with context
 ./5_training/scripts/biomed_roberta_base_e.sh
 ./5_training/scripts/biomed_roberta_base_er.sh
 ./5_training/scripts/roberta_base_e.sh
 ./5_training/scripts/roberta_base_er.sh
 ./5_training/scripts/roberta_large_e.sh
 ./5_training/scripts/roberta_large_er.sh
+
+# without context
+./5_training/scripts/biomed_roberta_base_e_nc.sh
+./5_training/scripts/biomed_roberta_base_er_nc.sh
+./5_training/scripts/roberta_base_e_nc.sh
+./5_training/scripts/roberta_base_er_nc.sh
+./5_training/scripts/roberta_large_e_nc.sh
+./5_training/scripts/roberta_large_er_nc.sh
 ```
 
 ### Run Testing Scripts
