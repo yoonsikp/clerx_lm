@@ -1,4 +1,4 @@
-python3 ./4_model/train.py \
+python3 ./model/train.py \
 --data_dir $DATA_DIR \
 --labels ./3_iob_data/labels.txt \
 --model_name_or_path $BERT_MODEL \

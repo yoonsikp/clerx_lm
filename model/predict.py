@@ -222,7 +222,7 @@ if __name__ == "__main__":
         "max_seq_length": 512,
         "output_dir": "/tmp/",
         "labels": "./3_iob_data/labels.txt",
-        "model_name_or_path": "distilroberta-base",
+        "model_name_or_path": "./5_training/saved_models_nc/biomed-roberta-base-final-2",
         "per_device_eval_batch_size": 1,
         "fp16": True,
     }
