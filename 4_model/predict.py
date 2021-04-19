@@ -230,19 +230,20 @@ if __name__ == "__main__":
     data_str = predmodel.set_relation("Finally\tO\nĠGroup\tB-EXPL_VAR\n", 1)
     dataset = predmodel.create_dataset(data_str)
     pred_relations, true_relations, pred_entity_ids, true_entity_ids, eval_loss = predmodel.do_predict(dataset)
-
-    print("true_relations", true_relations)
-    print("pred_relations", pred_relations)
-    print("relation_accuracy", accuracy_score(true_relations, pred_relations))
-
-    print("true_entity_ids", true_entity_ids)
-    print("pred_entity_ids", pred_entity_ids)
     trimmed_pred_entity_labels, trimmed_true_entity_labels = predmodel.trim_and_convert_entity_ids(
         pred_entity_ids, true_entity_ids
     )
-    print("trimmed_pred_entity_labels", trimmed_pred_entity_labels)
-    print("trimmed_true_entity_labels", trimmed_true_entity_labels)
+    def print_debug_info():
+        print("true_relations", true_relations)
+        print("pred_relations", pred_relations)
+        print("relation_accuracy", accuracy_score(true_relations, pred_relations))
 
-    print("eval_loss", eval_loss)
+        print("true_entity_ids", true_entity_ids)
+        print("pred_entity_ids", pred_entity_ids)
+    
+        print("trimmed_pred_entity_labels", trimmed_pred_entity_labels)
+        print("trimmed_true_entity_labels", trimmed_true_entity_labels)
+
+        print("eval_loss", eval_loss)
 
     predmodel.generate_iob(trimmed_pred_entity_labels, data_str)
