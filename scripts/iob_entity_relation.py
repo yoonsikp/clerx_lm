@@ -99,7 +99,7 @@ for name in sorted(glob.glob(args.input + '*.*')):
                 tag2_closed = False
                 cur_token = ''
                 next_pair = 0
-                for token in tokens:
+                for token_idx, token in enumerate(tokens):
                     iob_text = ''
                     intersect = tree[cur_pos:cur_pos + len(token)]
                     if len(intersect) > 1:
@@ -133,7 +133,7 @@ for name in sorted(glob.glob(args.input + '*.*')):
                             final_output += cur_token + '\t' + 'CONTEXT' + '\n'
                         iob_text = 'O'
                     final_output += token + '\t' + iob_text + '\n'
-                    cur_pos += len(token)
+                    cur_pos = len(tokenizer.convert_tokens_to_string(tokens[:token_idx + 1]))
                 final_output += '\n'
 print(final_output.strip())
 print(len(max(final_output.split("\n\n"), key=lambda x:len(x)).split('\n')), file=sys.stderr)

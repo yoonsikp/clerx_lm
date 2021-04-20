@@ -65,7 +65,7 @@ for name in sorted(glob.glob(args.input + '*.*')):
             max_tokens = max(len(tokens), max_tokens)
             counter = 0
             old_tag = None
-            for token in tokens:
+            for token_idx, token in enumerate(tokens):
                 iob_text = ''
                 intersect = tree[counter:counter + len(token)]
                 if len(intersect) > 1:
@@ -82,7 +82,7 @@ for name in sorted(glob.glob(args.input + '*.*')):
                 else:
                     iob_text = 'O'
                 final_output += token + '\t' + iob_text + '\n'
-                counter += len(token)
+                counter = len(tokenizer.convert_tokens_to_string(tokens[:token_idx + 1]))
             
 print(final_output)
 print(len(max(final_output.split("\n\n"), key=lambda x:len(x)).split('\n')), file=sys.stderr)
