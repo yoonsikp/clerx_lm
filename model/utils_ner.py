@@ -222,7 +222,8 @@ def convert_examples_to_features(
     features = []
     for (ex_index, example) in enumerate(examples):
         if ex_index % 10_000 == 0:
-            logger.info("Writing example %d of %d", ex_index, len(examples))
+            if not os.getenv('SILENT_MODE') or os.getenv('SILENT_MODE') != "1":
+                logger.info("Writing example %d of %d", ex_index, len(examples))
 
         tokens = []
         label_ids = []

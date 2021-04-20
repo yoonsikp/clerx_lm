@@ -12,7 +12,7 @@ for i in 2; do
     export OUTPUT_DIR_NAME=biomed-roberta-base-final-$i
     export OUTPUT_DIR=./6_testing/results/saved_models_er_nc/${OUTPUT_DIR_NAME}
     export TEST_RELATIONS=1
-    export TEST_DATA=./4_intermediate_data/no_context/validation/31748884_0/
+    export TEST_DATA=./4_intermediate_data/no_context/validation/
     mkdir -p $OUTPUT_DIR
     ./6_testing/scripts/run.sh
 done
