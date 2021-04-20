@@ -53,5 +53,10 @@ for f in ./2_annotated_articles/*; do python3 ./scripts/validate_tsv.py --input 
 ./5_training/scripts/roberta_large_er_nc.sh
 ```
 
+### Generate Intermediate Data files
+```
+./scripts/create_intermediate.sh
+```
+
 ### Run Testing Scripts
 

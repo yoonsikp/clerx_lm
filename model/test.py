@@ -20,12 +20,13 @@ final_args = {
     "fp16": True,
 }
 predmodel = PredictionModel(final_args)
-data_str = predmodel.set_relation(open(args.test_data + "./sample.txt", 'r').read(), None)
+data_str = predmodel.set_relation(open(args.test_data + "./entity.txt", 'r').read(), None)
 dataset = predmodel.create_dataset(data_str)
 pred_relations, true_relations, pred_entity_ids, true_entity_ids, eval_loss = predmodel.do_predict(dataset)
 trimmed_pred_entity_labels, trimmed_true_entity_labels = predmodel.trim_and_convert_entity_ids(
     pred_entity_ids, true_entity_ids
 )
+
 def print_debug_info():
     print("true_relations", true_relations)
     print("pred_relations", pred_relations)
@@ -38,8 +39,16 @@ def print_debug_info():
     print("trimmed_true_entity_labels", trimmed_true_entity_labels)
 
     print("eval_loss", eval_loss)
+
+    print(predmodel.generate_iob(trimmed_pred_entity_labels, data_str))
+    
 print_debug_info()
-predmodel.generate_iob(trimmed_pred_entity_labels, data_str)
+results = {
+            "precision": precision_score(trimmed_true_entity_labels, trimmed_pred_entity_labels),
+            "recall": recall_score(trimmed_true_entity_labels, trimmed_pred_entity_labels),
+            "f1": f1_score(trimmed_true_entity_labels, trimmed_pred_entity_labels),
+        }
+print(results)
 
 if args.test_relations == "1":
     print("testing relations TODO")

@@ -17,6 +17,7 @@
 
 import logging
 import os
+import copy
 import sys
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple, Union
@@ -185,36 +186,30 @@ class PredictionModel:
         else:
             return "<s>\tBOS_0\n" + data_str
 
-    def generate_iob(self, converted_entity_labels, data_str):
+    def generate_iob(self, entity_labels, data_str):
+        entity_labels = copy.deepcopy(entity_labels)
         i = 0
+        str_builder = ""
         for line in data_str.split("\n"):
             if line.startswith("-DOCSTART-") or line == "" or line == "\n":
-                print(line, end="")
-                if not converted_entity_labels[i]:
+                str_builder += line
+                if not entity_labels[i]:
                     i += 1
             elif "\tCONTEXT" in line:
                 pass
             elif "\tBOS_" in line:
                 pass
-            elif converted_entity_labels[i]:
+            elif entity_labels[i]:
                 output_line = (
-                    line.split()[0] + " " + converted_entity_labels[i].pop(0) + "\n"
+                    line.split()[0] + " " + entity_labels[i].pop(0) + "\n"
                 )
-                print(output_line, end="")
+                str_builder += output_line
             else:
                 logger.warning(
                     "Maximum sequence length exceeded: No prediction for '%s'.",
                     line.split()[0],
                 )
-
-
-def compute_metrics(p: EvalPrediction) -> Dict:
-    preds_list, out_label_list = trim_and_convert_entity_ids(p.predictions, p.label_ids)
-    return {
-        "precision": precision_score(out_label_list, preds_list),
-        "recall": recall_score(out_label_list, preds_list),
-        "f1": f1_score(out_label_list, preds_list),
-    }
+        return str_builder
 
 
 if __name__ == "__main__":

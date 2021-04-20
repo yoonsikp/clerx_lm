@@ -191,23 +191,27 @@ def main():
         else None
     )
 
-    def align_predictions(predictions: np.ndarray, label_ids: np.ndarray) -> Tuple[List[int], List[int]]:
-        preds = np.argmax(predictions, axis=2)
-        batch_size, seq_len = preds.shape
+    def trim_and_convert_entity_ids(
+        pred_ids: np.ndarray,
+        true_ids: np.ndarray,
+    ) -> Tuple[List[int], List[int]]:
+        batch_size, seq_len = pred_ids.shape
 
-        out_label_list = [[] for _ in range(batch_size)]
-        preds_list = [[] for _ in range(batch_size)]
+        true_labels = [[] * batch_size]
+        pred_labels = [[] * batch_size]
 
         for i in range(batch_size):
             for j in range(seq_len):
-                if label_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
-                    out_label_list[i].append(label_map[label_ids[i][j]])
-                    preds_list[i].append(label_map[preds[i][j]])
+                if true_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
+                    true_labels[i].append(label_map[true_ids[i][j]])
+                    pred_labels[i].append(label_map[pred_ids[i][j]])
 
-        return preds_list, out_label_list
+        return pred_labels, true_labels
+
 
     def compute_metrics(p: EvalPrediction) -> Dict:
-        preds_list, out_label_list = align_predictions(p.predictions, p.label_ids)
+        pred_ids = np.argmax(p.predictions, axis=2)
+        preds_list, out_label_list = trim_and_convert_entity_ids(pred_ids, p.label_ids)
         return {
             "precision": precision_score(out_label_list, preds_list),
             "recall": recall_score(out_label_list, preds_list),
