@@ -48,7 +48,7 @@ RR	O
 Ġnot	O
 ĠBD	B-OUTCOME_VAR
 -	I-OUTCOME_VAR
-I	O
+I	I-OUTCOME_VAR
 Ġ(	O
 RR	O
 ,	O

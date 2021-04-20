@@ -97,5 +97,5 @@ for name in sorted(glob.glob(args.input + '*.*')):
                     else:
                         iob_text = 'O'
                     output_file.write(token + '\t' + iob_text + '\n')
-                    counter += len(token)
+                    counter += len(tokenizer.convert_tokens_to_string(token))
     

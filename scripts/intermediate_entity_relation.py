@@ -150,4 +150,4 @@ for name in sorted(glob.glob(args.input + '*.*')):
                                 output_file.write(cur_token + '\t' + 'CONTEXT' + '\n')
                             iob_text = 'O'
                         output_file.write(token + '\t' + iob_text + '\n')
-                        cur_pos += len(token)
+                        cur_pos += len(tokenizer.convert_tokens_to_string(token))
