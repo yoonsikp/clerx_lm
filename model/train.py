@@ -197,8 +197,8 @@ def main():
     ) -> Tuple[List[int], List[int]]:
         batch_size, seq_len = pred_ids.shape
 
-        true_labels = [[] * batch_size]
-        pred_labels = [[] * batch_size]
+        true_labels = [[] for _ in range(batch_size)]
+        pred_labels = [[] for _ in range(batch_size)]
 
         for i in range(batch_size):
             for j in range(seq_len):
