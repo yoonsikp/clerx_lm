@@ -65,7 +65,7 @@ for foldername in glob(os.path.join(args.test_data, "") + "/*/"):
     if args.test_relations == "1":
         print("testing relations TODO")
 print(overall_results)
-exit()
+
 results = {
             "precision": precision_score(big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels),
             "recall": recall_score(big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels),
