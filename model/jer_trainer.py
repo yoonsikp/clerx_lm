@@ -1,4 +1,5 @@
 from transformers.trainer import *
+SILENT_MODE = os.getenv('SILENT_MODE') and os.getenv('SILENT_MODE') == "1"
 
 class JERTrainer(Trainer):
     def _prediction_loop(
@@ -38,7 +39,7 @@ class JERTrainer(Trainer):
             if self.args.past_index >= 0:
                 past = None
 
-            for inputs in tqdm(dataloader, desc=description):
+            for inputs in tqdm(dataloader, desc=description, disable=SILENT_MODE):
                 has_labels = any(inputs.get(k) is not None for k in ["labels", "lm_labels", "masked_lm_labels"])
 
                 for k, v in inputs.items():

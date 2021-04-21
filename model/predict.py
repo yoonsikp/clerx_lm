@@ -42,6 +42,7 @@ from torch_jer import RobertaForJointEntityRelationClassification
 
 logger = logging.getLogger(__name__)
 
+SILENT_MODE = os.getenv('SILENT_MODE') and os.getenv('SILENT_MODE') == "1"
 
 @dataclass
 class ModelArguments:
@@ -100,7 +101,8 @@ class PredictionModel:
             if self.training_args.local_rank in [-1, 0]
             else logging.WARN,
         )
-        logger.info("Training/evaluation parameters %s", self.training_args)
+        if not SILENT_MODE:
+            logger.info("Training/evaluation parameters %s", self.training_args)
 
         # Set seed
         set_seed(self.training_args.seed)
