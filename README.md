@@ -39,18 +39,24 @@ for f in ./2_annotated_articles/*; do python3 ./scripts/validate_tsv.py --input 
 # with context
 ./5_training/scripts/biomed_roberta_base_e.sh
 ./5_training/scripts/biomed_roberta_base_er.sh
+./5_training/scripts/biomed_roberta_base_r.sh
 ./5_training/scripts/roberta_base_e.sh
 ./5_training/scripts/roberta_base_er.sh
+./5_training/scripts/roberta_base_r.sh
 ./5_training/scripts/roberta_large_e.sh
 ./5_training/scripts/roberta_large_er.sh
+./5_training/scripts/roberta_large_r.sh
 
 # without context
 ./5_training/scripts/biomed_roberta_base_e_nc.sh
 ./5_training/scripts/biomed_roberta_base_er_nc.sh
+./5_training/scripts/biomed_roberta_base_r_nc.sh
 ./5_training/scripts/roberta_base_e_nc.sh
 ./5_training/scripts/roberta_base_er_nc.sh
+./5_training/scripts/roberta_base_r_nc.sh
 ./5_training/scripts/roberta_large_e_nc.sh
 ./5_training/scripts/roberta_large_er_nc.sh
+./5_training/scripts/roberta_large_r_nc.sh
 ```
 
 ### Generate Intermediate Data files
