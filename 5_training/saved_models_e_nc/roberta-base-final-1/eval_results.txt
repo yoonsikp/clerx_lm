@@ -1,0 +1,6 @@
+eval_loss = 0.2666865410283208
+eval_precision = 0.8
+eval_recall = 0.8275862068965517
+eval_f1 = 0.8135593220338982
+epoch = 60.0
+total_flos = 1846853355110400
