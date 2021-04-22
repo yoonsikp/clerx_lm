@@ -78,9 +78,46 @@ def print_debug_info():
     print(predmodel.generate_iob(trimmed_pred_entity_labels, data_str))
 
 
+def test_predefined_entity_relations():
+    concat_true_relations = []
+    concat_pred_relations = []
+    for relation_file in sorted(glob(os.path.join(foldername, "") + "/relation_*.txt")):
+        data_str = open(relation_file, "r").read()
+        dataset = predmodel.create_dataset(data_str)
+        (
+            pred_relations,
+            true_relations,
+            pred_entity_ids,
+            true_entity_ids,
+            eval_loss,
+        ) = predmodel.do_predict(dataset)
+        
+        concat_true_relations.append(true_relations)
+        concat_pred_relations.append(pred_relations)
+        big_true_relations.append(true_relations)
+        big_pred_relations.append(pred_relations)
+    print("concat_true_relations", concat_true_relations)
+    print("concat_pred_relations", concat_pred_relations)
+    print("relation_accuracy", accuracy_score(concat_true_relations, concat_pred_relations))
+
+def test_pipelined_entity_relations():
+    raise NotImplementedError
+
+def get_entities(tokens, labels):
+    ratio_spans = []
+    var_spans = []
+    # stores entities
+    # data structure: [(start_idx, end_idx)]
+    # (inclusive, exclusive)
+    ratio_spans  
+
+
 overall_results = {"TP": 0, "FP": 0, "FN": 0, "TN": 0}
 big_trimmed_true_entity_labels = []
 big_trimmed_pred_entity_labels = []
+big_true_relations = []
+big_pred_relations = []
+
 for foldername in sorted(glob(os.path.join(args.test_data, "") + "/*/")):
     data_str = predmodel.set_relation(
         open(foldername + "./entity.txt", "r").read(), None
@@ -114,7 +151,7 @@ for foldername in sorted(glob(os.path.join(args.test_data, "") + "/*/")):
         trimmed_true_entity_labels, trimmed_pred_entity_labels
     ).items():
         overall_results[metric] += val
-    print("Example ID:", foldername)
+    print("\nExample ID:", foldername)
     print("Metrics:", results)
     print(
         "Pred:",
@@ -125,7 +162,10 @@ for foldername in sorted(glob(os.path.join(args.test_data, "") + "/*/")):
         pretty_iob(predmodel.generate_iob(trimmed_true_entity_labels, data_str)),
     )
     if args.test_relations == "1":
-        pass
+        test_predefined_entity_relations()
+
+print("overall relation_accuracy", accuracy_score(big_true_relations, big_pred_relations))
+
 print(overall_results)
 
 results = {
