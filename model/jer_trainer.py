@@ -2,7 +2,7 @@ from transformers.trainer import *
 SILENT_MODE = os.getenv('SILENT_MODE') and os.getenv('SILENT_MODE') == "1"
 
 class JERTrainer(Trainer):
-    def _prediction_loop(
+    def prediction_loop(
             self, dataloader: DataLoader, description: str, prediction_loss_only: Optional[bool] = None
         ) -> PredictionOutput:
             """
