@@ -2,7 +2,7 @@
 .vscode/*
 3_iob_data/**/cached_*
 /runs/*
-saved_models/pytorch_model.bin
+pytorch_model.bin
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
