@@ -31,6 +31,7 @@ from torch import nn
 from torch.utils.data.dataset import Dataset
 
 logger = logging.getLogger(__name__)
+RELATION_ONLY = os.getenv('RELATION_ONLY') and os.getenv('RELATION_ONLY') == "1"
 
 
 @dataclass
@@ -327,7 +328,8 @@ def convert_examples_to_features(
 
         if "token_type_ids" not in tokenizer.model_input_names:
             segment_ids = None
-
+        if RELATION_ONLY:
+            label_ids = [pad_token_label_id * max_seq_length]
         features.append(
             InputFeatures(
                 input_ids=input_ids, attention_mask=input_mask, token_type_ids=segment_ids, label_ids=label_ids, relation_labels=relation_labels

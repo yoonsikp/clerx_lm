@@ -5,6 +5,8 @@ set -e
 # death after SIGINT
 trap 'exit' INT
 
+export RELATION_ONLY=1
+
 export MAX_LENGTH=512
 export BERT_MODEL=allenai/biomed_roberta_base
 export BATCH_SIZE=4
