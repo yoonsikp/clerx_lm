@@ -1,0 +1,52 @@
+{
+  "architectures": [
+    "RobertaForJointEntityRelationClassification"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bos_token_id": 0,
+  "eos_token_id": 2,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "id2label": {
+    "0": "O",
+    "1": "B-EXPL_VAR",
+    "2": "I-EXPL_VAR",
+    "3": "B-OUTCOME_VAR",
+    "4": "I-OUTCOME_VAR",
+    "5": "B-HR",
+    "6": "I-HR",
+    "7": "B-OR",
+    "8": "I-OR",
+    "9": "B-RR",
+    "10": "I-RR",
+    "11": "B-BASELINE",
+    "12": "I-BASELINE"
+  },
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "label2id": {
+    "B-BASELINE": 11,
+    "B-EXPL_VAR": 1,
+    "B-HR": 5,
+    "B-OR": 7,
+    "B-OUTCOME_VAR": 3,
+    "B-RR": 9,
+    "I-BASELINE": 12,
+    "I-EXPL_VAR": 2,
+    "I-HR": 6,
+    "I-OR": 8,
+    "I-OUTCOME_VAR": 4,
+    "I-RR": 10,
+    "O": 0
+  },
+  "layer_norm_eps": 1e-05,
+  "max_position_embeddings": 514,
+  "model_type": "roberta",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 1,
+  "type_vocab_size": 1,
+  "vocab_size": 50265
+}
