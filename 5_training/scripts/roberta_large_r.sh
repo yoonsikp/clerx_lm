@@ -8,7 +8,7 @@ trap 'exit' INT
 export RELATION_ONLY=1
 
 export MAX_LENGTH=512
-# export BERT_MODEL=roberta-large
+export BERT_MODEL=roberta-large
 export BATCH_SIZE=2
 export GRAD_ACCUM_SIZE=8
 export NUM_EPOCHS=10
@@ -17,7 +17,6 @@ export LEARNING_RATE=0.00003
 export DATA_DIR=./3_iob_data/context/train_relation
 
 for i in {1..10}; do
-    export BERT_MODEL=./5_training/saved_models_e/roberta-large-final-$i
     export SEED=$i
     export OUTPUT_DIR_NAME=roberta-large-final-$i
     export OUTPUT_DIR=./5_training/saved_models_r/${OUTPUT_DIR_NAME}
