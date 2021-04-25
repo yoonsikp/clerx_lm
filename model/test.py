@@ -106,7 +106,7 @@ def get_relation_stats(true, pred):
     ret_dict = {}
     ret_dict["acc"] = (tp+tn)/(tp+tn+fp+fn)
     ret_dict["prec"] = tp/(tp+fp) if (tp+fp > 0) else 0
-    ret_dict["recall"] = tp/(tp+fn) if (tp+fn) > 0) else 0
+    ret_dict["recall"] = tp/(tp+fn) if (tp+fn > 0) else 0
     ret_dict["f1"] = 2*tp/(2*tp+fp+fn) if (2*tp+fp+fn > 0) else 0
     return ret_dict
 
