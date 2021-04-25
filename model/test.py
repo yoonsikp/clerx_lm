@@ -97,7 +97,7 @@ def append_relation_stats(text):
     if not os.path.isfile(SUMMARY_FILENAME):
         with open(os.path.join(SUMMARY_FILENAME), 'x') as csvfile:
             csvfile.write("model,no_context,type,seed,sentence_id,")
-            csvfile.write("acc,prec,recall,f1\n")
+            csvfile.write("mcc,acc,prec,recall,f1\n")
     with open(os.path.join(SUMMARY_FILENAME), 'a') as csvfile:
         csvfile.write(text)
 
@@ -108,6 +108,7 @@ def get_relation_stats(true, pred):
     ret_dict["prec"] = tp/(tp+fp) if (tp+fp > 0) else 0
     ret_dict["recall"] = tp/(tp+fn) if (tp+fn > 0) else 0
     ret_dict["f1"] = 2*tp/(2*tp+fp+fn) if (2*tp+fp+fn > 0) else 0
+    ret_dict["mcc"] = (tp*tn-fp*fn)/(((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))**0.5)
     return ret_dict
 
 accum_sentw_acc = 0
@@ -181,20 +182,21 @@ for foldername in sorted(glob(os.path.join(args.data_dir, "") + "/*/")):
             big_pred_relations += list(pred_relations)
         sentw_count += 1
         relation_stats = get_relation_stats(concat_true_relations, concat_pred_relations)
+        accum_sentw_mcc += relation_stats["mcc"]
         accum_sentw_acc += relation_stats["acc"]
         accum_sentw_prec += relation_stats["prec"]
         accum_sentw_recall += relation_stats["recall"]
         accum_sentw_f1 += relation_stats["f1"]
 
         append_relation_stats(f"{model_name},{str(model_context)},{model_type},{seed},{foldername.rstrip('/').split('/')[-1]},")
-        append_relation_stats(f"{relation_stats['acc']},{relation_stats['prec']},{relation_stats['recall']},{relation_stats['f1']}\n")
+        append_relation_stats(f"{relation_stats['mcc']},{relation_stats['acc']},{relation_stats['prec']},{relation_stats['recall']},{relation_stats['f1']}\n")
 
 if args.test_relations == "1":   
     relation_stats = get_relation_stats(big_true_relations, big_pred_relations)
     append_relation_stats(f"{model_name},{str(model_context)},{model_type},{seed},AGGREGATE,")
-    append_relation_stats(f"{relation_stats['acc']},{relation_stats['prec']},{relation_stats['recall']},{relation_stats['f1']}\n")
+    append_relation_stats(f"{relation_stats['mcc']},{relation_stats['acc']},{relation_stats['prec']},{relation_stats['recall']},{relation_stats['f1']}\n")
     append_relation_stats(f"{model_name},{str(model_context)},{model_type},{seed},SENTW_AVG,")
-    append_relation_stats(f"{accum_sentw_acc/sentw_count},{accum_sentw_prec/sentw_count},{accum_sentw_recall/sentw_count},{accum_sentw_f1/sentw_count}\n")
+    append_relation_stats(f"{accum_sentw_mcc/sentw_count},{accum_sentw_acc/sentw_count},{accum_sentw_prec/sentw_count},{accum_sentw_recall/sentw_count},{accum_sentw_f1/sentw_count}\n")
 
 if args.test_entity == "1":
     print(overall_results)
