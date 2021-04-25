@@ -121,6 +121,7 @@ def get_relation_stats(true, pred):
         )
     return ret_dict
 
+
 all_trim_true_ent_labels = []
 all_trim_pred_ent_labels = []
 all_true_rels = []
@@ -155,12 +156,8 @@ for foldername in sorted(glob(os.path.join(args.data_dir, "") + "/*/")):
         all_trim_pred_ent_labels += trim_pred_ent_labels
 
         results = {
-            "precision": precision_score(
-                trim_true_ent_labels, trim_pred_ent_labels
-            ),
-            "recall": recall_score(
-                trim_true_ent_labels, trim_pred_ent_labels
-            ),
+            "precision": precision_score(trim_true_ent_labels, trim_pred_ent_labels),
+            "recall": recall_score(trim_true_ent_labels, trim_pred_ent_labels),
             "f1": f1_score(trim_true_ent_labels, trim_pred_ent_labels),
             "performance_measure": performance_measure(
                 trim_true_ent_labels, trim_pred_ent_labels
@@ -197,9 +194,7 @@ for foldername in sorted(glob(os.path.join(args.data_dir, "") + "/*/")):
             all_true_rels += list(true_rels)
             all_pred_rels += list(pred_rels)
         sentw_count += 1
-        rel_stats = get_relation_stats(
-            concat_true_rels, concat_pred_rels
-        )
+        rel_stats = get_relation_stats(concat_true_rels, concat_pred_rels)
         rel_sentw_mcc += rel_stats["mcc"]
         rel_sentw_acc += rel_stats["acc"]
         rel_sentw_prec += rel_stats["prec"]
@@ -238,15 +233,9 @@ if args.test_relations == "1":
 if args.test_entity == "1":
     print(
         "performance_measure",
-        performance_measure(
-            all_trim_true_ent_labels, all_trim_pred_ent_labels
-        ),
+        performance_measure(all_trim_true_ent_labels, all_trim_pred_ent_labels),
     )
-    print(
-        classification_report(
-            all_trim_true_ent_labels, all_trim_pred_ent_labels
-        )
-    )
+    print(classification_report(all_trim_true_ent_labels, all_trim_pred_ent_labels))
     entity_stats = classification_report(
         all_trim_true_ent_labels,
         all_trim_pred_ent_labels,
