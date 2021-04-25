@@ -55,7 +55,8 @@ SUMMARY_FILENAME = './6_validation/relations.csv'
 split_model = args.model_name_or_path.split('/')
 model_name = '-'.join(split_model[-1].split('-')[:-1])
 seed = split_model[-1].split('-')[-1]
-model_type = split_model[-2].lstrip("saved_models_").rstrip("_nc")
+model_type = split_model[-2][13:]
+model_type = model_type[:-3] if "_nc" in model_type
 model_context = split_model[-2][-3:] == "_nc"
 
 def pretty_iob(data_str):
