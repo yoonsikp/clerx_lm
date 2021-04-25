@@ -111,6 +111,7 @@ def get_relation_stats(true, pred):
     ret_dict["mcc"] = (tp*tn-fp*fn)/(((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))**0.5)
     return ret_dict
 
+accum_sentw_mcc = 0
 accum_sentw_acc = 0
 accum_sentw_prec = 0
 accum_sentw_recall = 0
