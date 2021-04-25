@@ -4,4 +4,4 @@ python3 ./model/test.py \
 --output_dir $OUTPUT_DIR \
 --test_relations $TEST_RELATIONS \
 --test_entity $TEST_ENTITY \
---test_data $TEST_DATA
+--data_dir $TEST_DATA
