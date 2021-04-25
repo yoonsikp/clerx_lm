@@ -164,7 +164,8 @@ for foldername in sorted(glob(os.path.join(args.test_data, "") + "/*/")):
     if args.test_relations == "1":
         test_predefined_entity_relations()
 
-print("overall relation_accuracy", accuracy_score(big_true_relations, big_pred_relations))
+if args.test_relations == "1":
+    print("overall relation_accuracy", accuracy_score(big_true_relations, big_pred_relations))
 
 print(overall_results)
 
