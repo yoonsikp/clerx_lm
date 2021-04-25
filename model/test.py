@@ -108,7 +108,10 @@ def get_relation_stats(true, pred):
     ret_dict["prec"] = tp/(tp+fp) if (tp+fp > 0) else 0
     ret_dict["recall"] = tp/(tp+fn) if (tp+fn > 0) else 0
     ret_dict["f1"] = 2*tp/(2*tp+fp+fn) if (2*tp+fp+fn > 0) else 0
-    ret_dict["mcc"] = (tp*tn-fp*fn)/(((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))**0.5)
+    if (tp+fp)*(tp+fn)*(tn+fp)*(tn+fn) == 0:
+        ret_dict["mcc"] = 0
+    else:
+        ret_dict["mcc"] = (tp*tn-fp*fn)/(((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))**0.5)
     return ret_dict
 
 accum_sentw_mcc = 0
