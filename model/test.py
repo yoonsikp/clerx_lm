@@ -96,7 +96,7 @@ def get_entities(tokens, labels):
 def append_relation_stats(text):
     if not os.path.isfile(SUMMARY_FILENAME):
         with open(os.path.join(SUMMARY_FILENAME), 'x') as csvfile:
-            csvfile.write("model,context,type,seed,sentence_id,")
+            csvfile.write("model,no_context,type,seed,sentence_id,")
             csvfile.write("acc,prec,recall,f1\n")
     with open(os.path.join(SUMMARY_FILENAME), 'a') as csvfile:
         csvfile.write(text)
