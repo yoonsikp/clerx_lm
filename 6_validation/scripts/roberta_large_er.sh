@@ -7,12 +7,12 @@ trap 'exit' INT
 
 export SILENT_MODE=1
 
-for i in 8; do
-    export BERT_MODEL=./5_training/saved_models_r/roberta-large-final-$i
+for i in 1; do
+    export BERT_MODEL=./5_training/saved_models_er/roberta-large-final-$i
     export OUTPUT_DIR_NAME=roberta-large-final-$i
-    export OUTPUT_DIR=./6_testing/results/saved_models_r/${OUTPUT_DIR_NAME}
+    export OUTPUT_DIR=./6_validation/results/saved_models_er/${OUTPUT_DIR_NAME}
     export TEST_RELATIONS=1
     export TEST_DATA=./4_intermediate_data/context/validation/
     mkdir -p $OUTPUT_DIR
-    ./6_testing/scripts/run.sh
+    ./6_validation/scripts/run.sh
 done
