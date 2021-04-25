@@ -3,4 +3,5 @@ python3 ./model/test.py \
 --model_name_or_path $BERT_MODEL \
 --output_dir $OUTPUT_DIR \
 --test_relations $TEST_RELATIONS \
+--test_entity $TEST_ENTITY \
 --test_data $TEST_DATA

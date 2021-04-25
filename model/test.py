@@ -18,6 +18,7 @@ parser.add_argument("--model_name_or_path", required=True)
 parser.add_argument("--output_dir", required=True)
 parser.add_argument("--test_relations", required=True)
 parser.add_argument("--test_data", required=True)
+parser.add_argument("--test_entity", required=True)
 
 args = parser.parse_args()
 
@@ -77,48 +78,7 @@ def print_debug_info():
 
     print(predmodel.generate_iob(trimmed_pred_entity_labels, data_str))
 
-
-def test_predefined_entity_relations():
-    concat_true_relations = []
-    concat_pred_relations = []
-    for relation_file in sorted(glob(os.path.join(foldername, "") + "/relation_*.txt")):
-        data_str = open(relation_file, "r").read()
-        dataset = predmodel.create_dataset(data_str)
-        (
-            pred_relations,
-            true_relations,
-            pred_entity_ids,
-            true_entity_ids,
-            eval_loss,
-        ) = predmodel.do_predict(dataset)
-        
-        concat_true_relations.append(true_relations)
-        concat_pred_relations.append(pred_relations)
-        big_true_relations.append(true_relations)
-        big_pred_relations.append(pred_relations)
-    print("concat_true_relations", concat_true_relations)
-    print("concat_pred_relations", concat_pred_relations)
-    print("relation_accuracy", accuracy_score(concat_true_relations, concat_pred_relations))
-
-def test_pipelined_entity_relations():
-    raise NotImplementedError
-
-def get_entities(tokens, labels):
-    ratio_spans = []
-    var_spans = []
-    # stores entities
-    # data structure: [(start_idx, end_idx)]
-    # (inclusive, exclusive)
-    ratio_spans  
-
-
-overall_results = {"TP": 0, "FP": 0, "FN": 0, "TN": 0}
-big_trimmed_true_entity_labels = []
-big_trimmed_pred_entity_labels = []
-big_true_relations = []
-big_pred_relations = []
-
-for foldername in sorted(glob(os.path.join(args.test_data, "") + "/*/")):
+def test_entities():
     data_str = predmodel.set_relation(
         open(foldername + "./entity.txt", "r").read(), None
     )
@@ -161,30 +121,73 @@ for foldername in sorted(glob(os.path.join(args.test_data, "") + "/*/")):
         "True:",
         pretty_iob(predmodel.generate_iob(trimmed_true_entity_labels, data_str)),
     )
+
+def test_predefined_entity_relations():
+    concat_true_relations = []
+    concat_pred_relations = []
+    for relation_file in sorted(glob(os.path.join(foldername, "") + "/relation_*.txt")):
+        data_str = open(relation_file, "r").read()
+        dataset = predmodel.create_dataset(data_str)
+        (
+            pred_relations,
+            true_relations,
+            pred_entity_ids,
+            true_entity_ids,
+            eval_loss,
+        ) = predmodel.do_predict(dataset)
+        
+        concat_true_relations.append(true_relations)
+        concat_pred_relations.append(pred_relations)
+        big_true_relations.append(true_relations)
+        big_pred_relations.append(pred_relations)
+    print("concat_true_relations", concat_true_relations)
+    print("concat_pred_relations", concat_pred_relations)
+    print("relation_accuracy", accuracy_score(concat_true_relations, concat_pred_relations))
+
+def test_pipelined_entity_relations():
+    raise NotImplementedError
+
+def get_entities(tokens, labels):
+    ratio_spans = []
+    var_spans = []
+    # stores entities
+    # data structure: [(start_idx, end_idx)]
+    # (inclusive, exclusive)
+    ratio_spans  
+
+
+overall_results = {"TP": 0, "FP": 0, "FN": 0, "TN": 0}
+big_trimmed_true_entity_labels = []
+big_trimmed_pred_entity_labels = []
+big_true_relations = []
+big_pred_relations = []
+
+for foldername in sorted(glob(os.path.join(args.test_data, "") + "/*/")):
+    if args.test_entities == "1":
+        test_entities()
     if args.test_relations == "1":
         test_predefined_entity_relations()
 
 if args.test_relations == "1":
     print("overall relation_accuracy", accuracy_score(big_true_relations, big_pred_relations))
 
-print(overall_results)
-
-results = {
-    "precision": precision_score(
-        big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels
-    ),
-    "recall": recall_score(
-        big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels
-    ),
-    "f1": f1_score(big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels),
-    "performance_measure": performance_measure(
-        big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels
-    ),
-}
-
-print(results)
-print(
-    classification_report(
-        big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels
+if args.test_entities == "1":
+    print(overall_results)
+    results = {
+        "precision": precision_score(
+            big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels
+        ),
+        "recall": recall_score(
+            big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels
+        ),
+        "f1": f1_score(big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels),
+        "performance_measure": performance_measure(
+            big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels
+        ),
+    }
+    print(results)
+    print(
+        classification_report(
+            big_trimmed_true_entity_labels, big_trimmed_pred_entity_labels
+        )
     )
-)
