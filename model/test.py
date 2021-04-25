@@ -78,6 +78,12 @@ def print_debug_info():
 
     print(predmodel.generate_iob(trimmed_pred_entity_labels, data_str))
 
+overall_results = {"TP": 0, "FP": 0, "FN": 0, "TN": 0}
+big_trimmed_true_entity_labels = []
+big_trimmed_pred_entity_labels = []
+big_true_relations = []
+big_pred_relations = []
+
 def test_entities():
     data_str = predmodel.set_relation(
         open(foldername + "./entity.txt", "r").read(), None
@@ -156,11 +162,6 @@ def get_entities(tokens, labels):
     ratio_spans  
 
 
-overall_results = {"TP": 0, "FP": 0, "FN": 0, "TN": 0}
-big_trimmed_true_entity_labels = []
-big_trimmed_pred_entity_labels = []
-big_true_relations = []
-big_pred_relations = []
 
 for foldername in sorted(glob(os.path.join(args.test_data, "") + "/*/")):
     if args.test_entity == "1":
