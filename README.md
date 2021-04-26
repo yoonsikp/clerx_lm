@@ -64,5 +64,12 @@ for f in ./2_annotated_articles/*; do python3 ./scripts/validate_tsv.py --input 
 ./scripts/create_intermediate.sh
 ```
 
-### Run Testing Scripts
+### Run Validation Scripts
+```
+```
 
+Choose Top 5 Performing Models from each category
+
+### Run Testing Scripts
+```
+```

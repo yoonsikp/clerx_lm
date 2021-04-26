@@ -135,6 +135,7 @@ rel_sentw_f1 = 0
 sentw_count = 0
 
 for foldername in sorted(glob(os.path.join(args.data_dir, "") + "/*/")):
+    sentence_id = foldername.rstrip('/').split('/')[-1]
     print("\nExample ID:", foldername)
     if args.test_entity == "1":
         data_str = predmodel.set_relation(
@@ -163,7 +164,12 @@ for foldername in sorted(glob(os.path.join(args.data_dir, "") + "/*/")):
                 trim_true_ent_labels, trim_pred_ent_labels
             ),
         }
-
+        os.makedirs(os.path.join(args.output_dir, sentence_id), exist_ok=True)
+        with open(os.path.join(args.output_dir, sentence_id, "entity.txt"), "w") as pred_iob_file:
+            # we need to readd context if it was in the original string
+            if "CONTEXT_END" in data_str:
+                pred_iob_file.write(data_str.split("CONTEXT_END")[0] + "CONTEXT_END" + "\n")
+            pred_iob_file.write(predmodel.generate_iob(trim_pred_ent_labels, data_str))
         print("Metrics:", results)
         print(
             "Pred:",
@@ -202,7 +208,7 @@ for foldername in sorted(glob(os.path.join(args.data_dir, "") + "/*/")):
         rel_sentw_f1 += rel_stats["f1"]
 
         append_relation_stats(
-            f"{model_name},{str(model_context)},{model_type},{seed},{foldername.rstrip('/').split('/')[-1]},"
+            f"{model_name},{str(model_context)},{model_type},{seed},{sentence_id},"
         )
         append_relation_stats(
             f"{rel_stats['mcc']},{rel_stats['acc']},{rel_stats['prec']},{rel_stats['recall']},{rel_stats['f1']}\n"
