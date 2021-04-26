@@ -79,14 +79,6 @@ def print_debug_info():
     print(predmodel.generate_iob(trim_pred_ent_labels, data_str))
 
 
-def get_entities(tokens, labels):
-    ratio_spans = []
-    var_spans = []
-    # stores entities
-    # data structure: [(start_idx, end_idx)]
-    # (inclusive, exclusive)
-    ratio_spans
-
 
 def append_entity_stats(text):
     if not os.path.isfile(ENT_SUMMARY_FILENAME):
