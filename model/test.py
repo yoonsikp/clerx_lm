@@ -20,6 +20,7 @@ parser.add_argument("--output_dir", required=True)
 parser.add_argument("--test_relations", required=True)
 parser.add_argument("--data_dir", required=True)
 parser.add_argument("--test_entity", required=True)
+parser.add_argument("--summary_dir", required=True)
 
 args = parser.parse_args()
 
@@ -51,8 +52,8 @@ color_dict = {
     "I-BASELINE": "\u001b[38;5;" + "4" + "m",
 }
 
-REL_SUMMARY_FILENAME = "./6_validation/relation_stats.csv"
-ENT_SUMMARY_FILENAME = "./6_validation/entity_stats.csv"
+REL_SUMMARY_FILENAME = os.path.join(args.summary_dir, "relation_stats.csv")
+ENT_SUMMARY_FILENAME = os.path.join(args.summary_dir, "entity_stats.csv")
 split_model = args.model_name_or_path.split("/")
 model_name = "-".join(split_model[-1].split("-")[:-1])
 seed = split_model[-1].split("-")[-1]

@@ -12,6 +12,7 @@ parser.add_argument("--labels", required=True)
 parser.add_argument("--model_name_or_path", required=True)
 parser.add_argument("--test_data_dir", required=True)
 parser.add_argument("--entity_data_dir", required=True)
+parser.add_argument("--summary_dir", required=True)
 
 args = parser.parse_args()
 
@@ -29,7 +30,7 @@ tokenizer = AutoTokenizer.from_pretrained("distilroberta-base")
 labels = get_labels(args.labels)
 label_map = {label: i for i, label in enumerate(labels)}
 
-JER_SUMMARY_FILENAME = "./6_validation/jer_stats.csv"
+JER_SUMMARY_FILENAME = os.path.join(args.summary_dir, "jer_stats.csv")
 split_model = args.model_name_or_path.split("/")
 model_name = "-".join(split_model[-1].split("-")[:-1])
 seed = split_model[-1].split("-")[-1]
