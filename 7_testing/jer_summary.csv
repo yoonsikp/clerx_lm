@@ -1,0 +1,13 @@
+jaccard_similarity_mean,jaccard_similarity_std,model,no_context,type,id
+0.41240682583189714,0.026828653596876854,biomed-roberta-base-final,True,r,biomed-roberta-base-final True r
+0.3759216578239039,0.05656955653081056,biomed-roberta-base-final,False,r,biomed-roberta-base-final False r
+0.3789078492566864,0.05560010531769842,biomed-roberta-base-final,True,er,biomed-roberta-base-final True er
+0.3467133841620915,0.04889677844384653,biomed-roberta-base-final,False,er,biomed-roberta-base-final False er
+0.34018686388003316,0.026401260023844124,roberta-base-final,True,r,roberta-base-final True r
+0.32973710905281517,0.05622589001200984,roberta-base-final,False,r,roberta-base-final False r
+0.23743368821426145,0.011782174788341771,roberta-base-final,True,er,roberta-base-final True er
+0.26494300854581926,0.10387734014414332,roberta-base-final,False,er,roberta-base-final False er
+0.4334600165453022,0.03284292423613686,roberta-large-final,True,r,roberta-large-final True r
+0.3596628466639343,0.061494086246327274,roberta-large-final,False,r,roberta-large-final False r
+0.423537746004576,0.020776670476097395,roberta-large-final,True,er,roberta-large-final True er
+0.4426229508196722,0.00655737704918033,roberta-large-final,False,er,roberta-large-final False er
