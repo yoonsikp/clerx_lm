@@ -66,10 +66,15 @@ for f in ./2_annotated_articles/*; do python3 ./scripts/validate_tsv.py --input 
 
 ### Run Validation Scripts
 ```
+./6_validation/scripts/pre_pipeline/*
+./6_validation/scripts/pipeline/*
+./6_validation/scripts/get_top_3.sh
 ```
-
-Choose Top 5 Performing Models from each category
 
 ### Run Testing Scripts
 ```
+./7_testing/scripts/pre_pipeline/*
+./7_testing/scripts/pipeline/*
+cd 7_testing
+jupyter nbconvert --execute --clear-output summary_stats.ipynb
 ```
