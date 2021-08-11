@@ -6,8 +6,7 @@ args = parser.parse_args()
 
 args.input = os.path.join(args.input, '')
 if not os.path.isdir(args.input):
-    logging.error(args.input + " not a folder or doesn't exist")
-    exit(1)
+    raise Exception(args.input + " not a folder or doesn't exist")
 
 import glob
 
