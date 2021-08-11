@@ -29,7 +29,12 @@ Multiple entity annotations are seperated using a period.
 ## Relation Annotation Format
 List of true relations between entities. Entities are identified from the previous column, in order, starting at one.
 
-Assuming there were 3 entities in the previous column, for example:
+Example:
+```
+1,2
+```
+
+Multiple true relations are seperated using a period. Assuming there were 3 entities in the previous column, for example:
 ```
 1,3.2,3
 ```
