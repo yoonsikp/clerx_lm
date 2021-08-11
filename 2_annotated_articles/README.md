@@ -38,3 +38,15 @@ Multiple true relations are seperated using a period. Assuming there were 3 enti
 ```
 1,3.2,3
 ```
+
+## Annotation Guidelines
+We annotated all explanatory variables, even those without an associated ratio in the sentence
+
+We did not annotate the word "patients", "outcome", "burden", or "diagnosis" unless necessary
+
+Prefixed adjectives that unnecessarily modify the outcome variable were not included, e.g.
+NO: (favorable functional outcome at 3 months) YES: (functional outcome at 3 months)
+
+We omited articles such as "the" or "a".
+
+Sometimes outcome and explanatory variables could not be differentiated, i.e. when it's a population characteristic. This is because P(O|AC)/P(O|BC) = P(O∩C|A)/P(O∩C|B).
