@@ -1,6 +1,6 @@
 # CLERx-LM
 ### Update 2023
-Presentation PDF in root directory
+PDF Presentation in root directory
 
 ### Install Requirements
 Tested on Python 3.8!
